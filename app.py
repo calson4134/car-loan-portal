@@ -15,7 +15,7 @@ st.set_page_config(
 
 # --- SECURITY / PASSWORD LOGIN SCREEN ---
 # Change "your_secure_password" to whatever password you want to give your team
-APP_PASSWORD = "your_secure_password"
+APP_PASSWORD = "metro"
 
 def check_password():
     """Returns `True` if the user entered the correct password."""

@@ -13,8 +13,37 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🚗 Car Loan Application Portal - Direct Text Stamping Edition")
-st.markdown("Directly stamps text values and auto-places signatures onto your PDF forms.")
+# --- SECURITY / PASSWORD LOGIN SCREEN ---
+# Change "your_secure_password" to whatever password you want to give your team
+APP_PASSWORD = "your_secure_password"
+
+def check_password():
+    """Returns `True` if the user entered the correct password."""
+    if "password_correct" not in st.session_state:
+        st.session_state.password_correct = False
+
+    if st.session_state.password_correct:
+        return True
+
+    # Show login screen
+    st.title("🔒 Car Loan Submission Portal - Login")
+    st.markdown("Please enter the team password to access the portal.")
+    
+    entered_password = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if entered_password == APP_PASSWORD:
+            st.session_state.password_correct = True
+            st.rerun()
+        else:
+            st.error("😕 Incorrect password. Please try again.")
+    return False
+
+if not check_password():
+    st.stop()  # Halts execution here if not logged in
+
+# --- MAIN APP (Only runs after successful login) ---
+st.title("🚗 Car Loan Application Portal - Secure Edition")
+st.markdown("Fill out applicant details and auto-stamp signatures directly into Sejda-defined form fields.")
 
 # Path to template files
 TEMPLATE_DIR = "templates"
@@ -230,7 +259,6 @@ if submitted:
                 template_path = os.path.join(TEMPLATE_DIR, file_name)
 
                 if os.path.exists(template_path):
-                    # --- DIRECTLY PROCESS FORM FIELDS & SIGNATURES USING PyMuPDF ---
                     doc = fitz.open(template_path)
                     
                     for page in doc:
@@ -238,12 +266,10 @@ if submitted:
                             field_name = widget.field_name
                             rect = widget.rect
                             
-                            # 1. Fill Text Fields Dynamically
                             if field_name in applicant_data and applicant_data[field_name]:
                                 widget.field_value = str(applicant_data[field_name])
                                 widget.update()
                             
-                            # 2. Stamp Signatures Automatically
                             if field_name == "hirer_signature" and hirer_sig_bytes:
                                 page.insert_image(rect, stream=hirer_sig_bytes.getvalue(), keep_proportion=True)
                             elif field_name == "gtor01_signature" and g1_sig_bytes:
@@ -265,7 +291,7 @@ if submitted:
         zip_buffer.seek(0)
 
         if generated_files:
-            st.success(f"Successfully generated {len(generated_files)} loan form(s) with dates and signatures rendered!")
+            st.success(f"Successfully generated {len(generated_files)} loan form(s) securely!")
             st.markdown("---")
             st.subheader("📥 Download Generated Documents")
 

@@ -14,7 +14,6 @@ st.set_page_config(
 )
 
 # --- SECURITY / PASSWORD LOGIN SCREEN ---
-# Change "your_secure_password" to whatever password you want to give your team
 APP_PASSWORD = "metro"
 
 def check_password():
@@ -49,7 +48,9 @@ st.markdown("Fill out applicant details and auto-stamp signatures directly into 
 TEMPLATE_DIR = "templates"
 TEST_COMPANIES = {
     "ELK Credit": "ELK_template.pdf",
-    "365 Capital": "365_Capital_template.pdf"
+    "365 Capital": "365_Capital_template.pdf",
+    "Capital Temasek": "Capital_Temasek_template.pdf",
+    "SMS Credit": "SMS_template.pdf"
 }
 
 # --- HELPER FUNCTION TO CONVERT CANVAS DRAWING TO IMAGE & FIX ROTATION ---

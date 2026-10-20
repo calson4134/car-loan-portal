@@ -53,7 +53,7 @@ TEST_COMPANIES = {
     "SMS Credit": "SMS_template.pdf"
 }
 
-# --- HELPER FUNCTION TO CONVERT CANVAS DRAWING TO IMAGE & FIX ROTATION ---
+# --- HELPER FUNCTION TO CONVERT CANVAS DRAWING TO IMAGE & ROTATE ---
 def canvas_to_image_bytes(canvas_result, rotate_angle=270):
     if canvas_result and canvas_result.image_data is not None:
         img_array = canvas_result.image_data
@@ -94,7 +94,8 @@ with st.form("loan_application_form"):
         hirer_marital_status = st.selectbox("Hirer Marital Status", ["Single", "Married", "Divorced", "Widowed"])
 
     with col2:
-        hirer_address = st.text_area("Hirer Address", placeholder="Street, City, Postcode, State", height=85)
+        hirer_address_line_01 = st.text_input("Hirer Address Line 01", placeholder="Street Address / Taman")
+        hirer_address_line_02 = st.text_input("Hirer Address Line 02", placeholder="Postcode, City, State")
         hirer_employer_name = st.text_input("Hirer Employer / Business Name", placeholder="e.g. AgriPro Hardware")
         hirer_employer_phone_number = st.text_input("Hirer Employer Phone Number", placeholder="e.g. 03-12345678")
         hirer_employer_address = st.text_input("Hirer Employer Address", placeholder="Employer address")
@@ -143,7 +144,8 @@ with st.form("loan_application_form"):
             gtor01_marital_status = st.selectbox("Gtor 01 Marital Status", ["", "Single", "Married", "Divorced", "Widowed"], key="g1_marital")
             gtor01_relationship = st.text_input("Gtor 01 Relationship With Hirer", key="g1_rel")
         with g1_col2:
-            gtor01_address = st.text_area("Gtor 01 Address", height=85, key="g1_add")
+            gtor01_address_line_01 = st.text_input("Gtor 01 Address Line 01", key="g1_add1")
+            gtor01_address_line_02 = st.text_input("Gtor 01 Address Line 02", key="g1_add2")
             gtor01_employer_name = st.text_input("Gtor 01 Employer / Business Name", key="g1_emp")
             gtor01_employer_phone_number = st.text_input("Gtor 01 Employer Phone", key="g1_empph")
             gtor01_employer_address = st.text_input("Gtor 01 Employer Address", key="g1_empadd")
@@ -174,7 +176,8 @@ with st.form("loan_application_form"):
             gtor02_marital_status = st.selectbox("Gtor 02 Marital Status", ["", "Single", "Married", "Divorced", "Widowed"], key="g2_marital")
             gtor02_relationship = st.text_input("Gtor 02 Relationship With Hirer", key="g2_rel")
         with g2_col2:
-            gtor02_address = st.text_area("Gtor 02 Address", height=85, key="g2_add")
+            gtor02_address_line_01 = st.text_input("Gtor 02 Address Line 01", key="g2_add1")
+            gtor02_address_line_02 = st.text_input("Gtor 02 Address Line 02", key="g2_add2")
             gtor02_employer_name = st.text_input("Gtor 02 Employer / Business Name", key="g2_emp")
             gtor02_employer_phone_number = st.text_input("Gtor 02 Employer Phone", key="g2_empph")
             gtor02_employer_address = st.text_input("Gtor 02 Employer Address", key="g2_empadd")
@@ -209,7 +212,8 @@ if submitted:
             "hirer_ic_number": hirer_ic_number,
             "hirer_phone_number": hirer_phone_number,
             "hirer_email": hirer_email,
-            "hirer_address": hirer_address,
+            "hirer_address_line_01": hirer_address_line_01,
+            "hirer_address_line_02": hirer_address_line_02,
             "hirer_marital_status": hirer_marital_status,
             "hirer_employer_name": hirer_employer_name,
             "hirer_employer_phone_number": hirer_employer_phone_number,
@@ -218,7 +222,8 @@ if submitted:
             "gtor01_name": gtor01_name.upper() if 'gtor01_name' in locals() and gtor01_name else "",
             "gtor01_ic_number": gtor01_ic_number if 'gtor01_ic_number' in locals() else "",
             "gtor01_phone_number": gtor01_phone_number if 'gtor01_phone_number' in locals() else "",
-            "gtor01_address": gtor01_address if 'gtor01_address' in locals() else "",
+            "gtor01_address_line_01": gtor01_address_line_01 if 'gtor01_address_line_01' in locals() else "",
+            "gtor01_address_line_02": gtor01_address_line_02 if 'gtor01_address_line_02' in locals() else "",
             "gtor01_marital_status": gtor01_marital_status if 'gtor01_marital_status' in locals() else "",
             "gtor01_employer_name": gtor01_employer_name if 'gtor01_employer_name' in locals() else "",
             "gtor01_employer_phone_number": gtor01_employer_phone_number if 'gtor01_employer_phone_number' in locals() else "",
@@ -228,7 +233,8 @@ if submitted:
             "gtor02_name": gtor02_name.upper() if 'gtor02_name' in locals() and gtor02_name else "",
             "gtor02_ic_number": gtor02_ic_number if 'gtor02_ic_number' in locals() else "",
             "gtor02_phone_number": gtor02_phone_number if 'gtor02_phone_number' in locals() else "",
-            "gtor02_address": gtor02_address if 'gtor02_address' in locals() else "",
+            "gtor02_address_line_01": gtor02_address_line_01 if 'gtor02_address_line_01' in locals() else "",
+            "gtor02_address_line_02": gtor02_address_line_02 if 'gtor02_address_line_02' in locals() else "",
             "gtor02_marital_status": gtor02_marital_status if 'gtor02_marital_status' in locals() else "",
             "gtor02_employer_name": gtor02_employer_name if 'gtor02_employer_name' in locals() else "",
             "gtor02_employer_phone_number": gtor02_employer_phone_number if 'gtor02_employer_phone_number' in locals() else "",
@@ -247,9 +253,13 @@ if submitted:
             "dealer_contact": dealer_contact
         }
 
-        hirer_sig_bytes = canvas_to_image_bytes(canvas_hirer)
-        g1_sig_bytes = canvas_to_image_bytes(canvas_g1) if canvas_g1 else None
-        g2_sig_bytes = canvas_to_image_bytes(canvas_g2) if canvas_g2 else None
+        canvas_hirer_raw = canvas_to_image_bytes(canvas_hirer, rotate_angle=270)
+        canvas_g1_raw = canvas_to_image_bytes(canvas_g1, rotate_angle=270) if canvas_g1 else None
+        canvas_g2_raw = canvas_to_image_bytes(canvas_g2, rotate_angle=270) if canvas_g2 else None
+
+        canvas_hirer_straight = canvas_to_image_bytes(canvas_hirer, rotate_angle=0)
+        canvas_g1_straight = canvas_to_image_bytes(canvas_g1, rotate_angle=0) if canvas_g1 else None
+        canvas_g2_straight = canvas_to_image_bytes(canvas_g2, rotate_angle=0) if canvas_g2 else None
 
         generated_files = {}
         zip_buffer = io.BytesIO()
@@ -260,6 +270,17 @@ if submitted:
                 template_path = os.path.join(TEMPLATE_DIR, file_name)
 
                 if os.path.exists(template_path):
+                    # Set signature rotation per company layout
+                    if company == "ELK Credit":
+                        h_sig = canvas_hirer_raw
+                        g1_sig = canvas_g1_raw
+                        g2_sig = canvas_g2_raw
+                    else:
+                        # 365 Capital, Capital Temasek, and SMS Credit get un-rotated signatures
+                        h_sig = canvas_hirer_straight
+                        g1_sig = canvas_g1_straight
+                        g2_sig = canvas_g2_straight
+
                     doc = fitz.open(template_path)
                     
                     for page in doc:
@@ -271,12 +292,12 @@ if submitted:
                                 widget.field_value = str(applicant_data[field_name])
                                 widget.update()
                             
-                            if field_name == "hirer_signature" and hirer_sig_bytes:
-                                page.insert_image(rect, stream=hirer_sig_bytes.getvalue(), keep_proportion=True)
-                            elif field_name == "gtor01_signature" and g1_sig_bytes:
-                                page.insert_image(rect, stream=g1_sig_bytes.getvalue(), keep_proportion=True)
-                            elif field_name == "gtor02_signature" and g2_sig_bytes:
-                                page.insert_image(rect, stream=g2_sig_bytes.getvalue(), keep_proportion=True)
+                            if field_name == "hirer_signature" and h_sig:
+                                page.insert_image(rect, stream=h_sig.getvalue(), keep_proportion=True)
+                            elif field_name == "gtor01_signature" and g1_sig:
+                                page.insert_image(rect, stream=g1_sig.getvalue(), keep_proportion=True)
+                            elif field_name == "gtor02_signature" and g2_sig:
+                                page.insert_image(rect, stream=g2_sig.getvalue(), keep_proportion=True)
 
                     pdf_bytes = doc.write()
                     doc.close()
